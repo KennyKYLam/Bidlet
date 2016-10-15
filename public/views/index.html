@@ -1,14 +1,171 @@
-<!doctype html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-
+    <base href="/">
     <title>Bidlet</title>
-
+    <!-- CSS -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css"> <!-- custom styles -->
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
+    </script>
+    <!-- ANGULAR CUSTOM -->
+    <script src="js/controllers/MainCtrl.js"></script>
+    <script src="js/controllers/EstateCtrl.js"></script>
+    <script src="js/services/EstateService.js"></script>
+    <script src="js/appRoutes.js"></script>
+    <script src="js/app.js"></script>
 </head>
-<body>
 
-    haha
+<body ng-app="BidletApp" ng-controller="MainController">
+    <!-- HEADER -->
+    <nav>
+        <div class="nav-wrapper blue">
+            <a href="#" class="brand-logo">Bidlet</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a id="fblogin">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
 
+    <div class="container">
+        <div class="row">
+            <div class="col s3 m3" ng-if="isLoggedIn">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="{{userPhotoURL}}">
+                        <span class="card-title">{{username}}</span>
+                    </div>
+                    <div class="card-content">
+                        <p>Systems Design Engineering Student</p>
+                    </div>
+                </div>
+                <ul class="collection with-header">
+                    <li class="collection-header"><b>Active Outgoing Bids</b></li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                </ul>
+                <ul class="collection with-header">
+                    <li class="collection-header"><b>Active Incoming Bids</b></li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                </ul>
+                <ul class="collection with-header">
+                    <li class="collection-header"><b>Active Sublets</b></li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                    <li class="collection-item">
+                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col s9 m9" ng-if="isLoggedIn">
+                <h4>Available Listings Nearby</h4>
+                <div class="col s12 m12" ng-repeat="item in listings">
+                    <div class="card horizontal">
+                        <div class="card-image">
+                            <img src="{{item.image}}">
+                        </div>
+                        <div class="card-stacked">
+                            <h3 class="card-content header">{{item.title}}</h3>
+                            <div class="card-content">
+                                <b>Summary: </b>{{item.description}}</p>
+                                <b>Address: </b>{{item.address}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="#">Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--------------- Anonymous-------------- -->
+            <div class="col s12 m12" ng-if="!isLoggedIn">
+                <h4>Available Listings Nearby</h4>
+                <div class="col s12 m12" ng-repeat="item in listings">
+                    <div class="card horizontal">
+                        <div class="card-image">
+                            <img src="{{item.image}}">
+                        </div>
+                        <div class="card-stacked">
+                            <h3 class="card-content header">{{item.title}}</h3>
+                            <div class="card-content">
+                                <b>Summary: </b>{{item.description}}</p>
+                                <b>Address: </b>{{item.address}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="#">Bid</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large red modal-trigger waves-effect waves-light " onclick="$('#postModal').openModal();">
+            <i class="material-icons post">add</i>
+        </a>
+    </div>
+    <!-- Modal Structure -->
+    <div id="postModal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Post</h4>
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="title" type="text" class="validate">
+                        <label for="title">Title</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="address" type="text" class="validate">
+                        <label for="address">Address</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="description" type="text" class="validate">
+                        <label for="description">Description</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="imageLink" type="text" class="validate">
+                        <label for="imageLink">Image Link</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Save</a>
+        </div>
+    </div>
 </body>
+
 </html>
