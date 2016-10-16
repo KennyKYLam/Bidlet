@@ -15,8 +15,9 @@ app.controller('MainController', function($scope) {
     $scope.username = username;
     $scope.userPhotoURL = userPhotoURL;
     $scope.email = email;
-    $scope.anonlistings = [{ title: "8 month lease near UW", bidPrice: 560, photoURL: "http://i.ebayimg.com/00/s/NjM2WDQ1MA==/z/kMoAAOSwU-pXr~h~/$_35.JPG", description: "female only, 2 rooms left", address: "Lester 203" },
-        { title: "4 month Sublet near UW", bidPrice: 800, photoURL: "http://i.ebayimg.com/00/s/NjM2WDQ1MA==/z/kMoAAOSwU-pXr~h~/$_35.JPG", description: "Nice and clean, close to campus", address: "Lester 203" }
+    $scope.anonlistings = [{ title: "8 month lease near UW", landlord: "Joanna", bidder: "Jeffrey Brown", bidPrice: 560, photoURL: "http://i.ebayimg.com/00/s/NjM2WDQ1MA==/z/kMoAAOSwU-pXr~h~/$_35.JPG", description: "female only, 2 rooms left", address: "Lester 203" },
+        { title: "8 month sublet near Laurier", landlord: "Terence", bidder: "Andrew Brown", bidPrice: 560, photoURL: "http://faithchung.ca/images/22953/Icon-145.jpg", description: "1 cool room out of 5", address: "University 200" },
+        { title: "4 month Sublet near UW", landlord:"Kelly", bidder: "Jane Doe", bidPrice: 800, photoURL: "http://i.ebayimg.com/00/s/NjM2WDQ1MA==/z/kMoAAOSwU-pXr~h~/$_35.JPG", description: "Nice and clean, close to campus", address: "Lester 203" }
     ];
     var array = [];
     var list = firebase.database().ref("estates/").orderByChild("title").on("child_added", function(data) {
@@ -95,20 +96,6 @@ app.controller('MainController', function($scope) {
         });
     });
 
-    $scope.bid = function(item) {
-        firebase.database().ref('estates/' + $scope.title).set({
-            title: item.title || '',
-            landlord: item.landlord || '',
-            address: item.address || '',
-            description: item.description || '',
-            startPrice: item.startPrice || 0,
-            currentPrice: item.bidPrice || 0,
-            bidPrice: item.bidPrice || 0,
-            photoURL: item.photoURL || '',
-            bidder: username
-                // lastDayOfBid: lastDayOfBid
-        });
-    };
 });
 
 firebase.initializeApp(config);

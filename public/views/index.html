@@ -83,28 +83,19 @@
                 <ul class="collection with-header">
                     <li class="collection-header"><b>Active Outgoing Bids</b></li>
                     <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                        <div>None<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
                     </li>
                 </ul>
                 <ul class="collection with-header">
                     <li class="collection-header"><b>Active Incoming Bids</b></li>
                     <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                        <div>None<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
                     </li>
                 </ul>
                 <ul class="collection with-header">
                     <li class="collection-header"><b>Active Sublets</b></li>
                     <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
+                        <div>None<a href="#!" class="secondary-content"><i class="material-icons">info</i></a></div>
                     </li>
                 </ul>
             </div>
@@ -130,10 +121,10 @@
                         </div>
                     </div>
                     <!-- Bid Modal Structure -->
-                    <div id="bidModal" class="modal modal-fixed-footer">
+                    <div id="bidModal" class="modal modal-fixed-footer" ng-model="item[1]">
                         <div class="modal-content">
                             <h4>Bid</h4>
-                            <form class="col s12" ng-model="item">
+                            <form class="col s12">
                                 <div class="row">
                                     <h5 for="title">{{item.title}}</h5>
                                     <p for="title">Current Bid Price: ${{item.currentPrice}}</p>
@@ -146,10 +137,30 @@
                                         </p>
                                     </form>
                                 </div>
+                                <div class="row">
+                                    By clicking Bid, you agree to pay <b>$50</b> deposit for renting this estate if you win this bid.
+                                </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <a href="#!" id="bidEstate" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="bid(item)">Bid</a>
+                            <script type="text/javascript">
+                            function bid(item) {
+                                console.log(item);
+                                firebase.database().ref('estates/' + item.title).set({
+                                    title: item.title || '',
+                                    landlord: item.landlord || '',
+                                    address: item.address || '',
+                                    description: item.description || '',
+                                    startPrice: item.startPrice || 0,
+                                    currentPrice: item.bidPrice || 0,
+                                    bidPrice: item.bidPrice || 0,
+                                    photoURL: item.photoURL || '',
+                                    bidder: username
+                                        // lastDayOfBid: lastDayOfBid
+                                });
+                            };
+                            </script>
+                            <a href="#!" id="bidEstate" class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="{{item.bidder = 'Kenny'}}">Bid
                         </div>
                     </div>
                 </div>
@@ -211,3 +222,8 @@
 </body>
 
 </html>
+<style type="text/css">
+.horizontal.card .card-image {
+    max-width: 25%;
+}
+</style>
