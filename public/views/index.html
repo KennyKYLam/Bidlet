@@ -35,16 +35,41 @@
 <body ng-app="BidletApp" ng-controller="MainController">
     <!-- HEADER -->
     <nav>
-        <div class="nav-wrapper blue">
+        <div class="nav-wrapper green">
             <a href="#" class="brand-logo">Bidlet</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a id="fblogin">Sign In</a></li>
             </ul>
         </div>
     </nav>
-
     <div class="container">
         <div class="row">
+            <!--------------- Anonymous-------------- -->
+            <div class="col s10 m10" ng-if="!isLoggedIn">
+                <h4>Available Listings Nearby</h4>
+                <div class="col s12 m12" ng-repeat="item in anonlistings track by $index">
+                    <div class="card horizontal">
+                        <div class="card-image">
+                            <img src="{{item.photoURL}}">
+                        </div>
+                        <div class="card-stacked">
+                            <h3 class="card-content header">{{item.title}}</h3>
+                            <div class="card-content">
+                                <p><b>Highest Bidder: </b>{{item.bidder}}</p>
+                                <p><b>Current Bid Price: $</b>{{item.bidPrice}}</p>
+                                <p><b>Address: </b>{{item.address}}</p>
+                                <p><b>Landlord: </b>{{item.landlord}}</p>
+                                <p><b>Summary: </b>{{item.description}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="#" class="bid">Bid</a>
+                                <label>Login to Bid.</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- logged in -->
             <div class="col s3 m3" ng-if="isLoggedIn">
                 <div class="card">
                     <div class="card-image">
@@ -52,7 +77,7 @@
                         <span class="card-title">{{username}}</span>
                     </div>
                     <div class="card-content">
-                        <p>Systems Design Engineering Student</p>
+                        <p>email: {{email}}</p>
                     </div>
                 </div>
                 <ul class="collection with-header">
@@ -85,48 +110,53 @@
             </div>
             <div class="col s9 m9" ng-if="isLoggedIn">
                 <h4>Available Listings Nearby</h4>
-                <div class="col s12 m12" ng-repeat="item in listings">
+                <div class="col s12 m12" ng-repeat="item in listings track by $index">
                     <div class="card horizontal">
                         <div class="card-image">
-                            <img src="{{item.image}}">
+                            <img src="{{item.photoURL}}">
                         </div>
                         <div class="card-stacked">
                             <h3 class="card-content header">{{item.title}}</h3>
                             <div class="card-content">
-                                <b>Summary: </b>{{item.description}}</p>
-                                <b>Address: </b>{{item.address}}</p>
+                                <p><b>Highest Bidder: </b>{{item.bidder}}</p>
+                                <p><b>Current Bid Price: $</b>{{item.bidPrice}}</p>
+                                <p><b>Address: </b>{{item.address}}</p>
+                                <p><b>Landlord: </b>{{item.landlord}}</p>
+                                <p><b>Summary: </b>{{item.description}}</p>
                             </div>
                             <div class="card-action">
-                                <a href="#">Bid</a>
+                                <a href="#" class="bid" onclick="$('#bidModal').openModal()">Bid</a>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <!--------------- Anonymous-------------- -->
-            <div class="col s12 m12" ng-if="!isLoggedIn">
-                <h4>Available Listings Nearby</h4>
-                <div class="col s12 m12" ng-repeat="item in listings">
-                    <div class="card horizontal">
-                        <div class="card-image">
-                            <img src="{{item.image}}">
+                    <!-- Bid Modal Structure -->
+                    <div id="bidModal" class="modal modal-fixed-footer">
+                        <div class="modal-content">
+                            <h4>Bid</h4>
+                            <form class="col s12" ng-model="item">
+                                <div class="row">
+                                    <h5 for="title">{{item.title}}</h5>
+                                    <p for="title">Current Bid Price: ${{item.currentPrice}}</p>
+                                </div>
+                                <div class="row">
+                                    <form action="#">
+                                        <label>Your New Bid Price: {{item.bidPrice}}</label>
+                                        <p class="range-field">
+                                            <input type="range" id="startPrice" min="{{item.startPrice}}" max="2000" ng-model="item.bidPrice" />
+                                        </p>
+                                    </form>
+                                </div>
+                            </form>
                         </div>
-                        <div class="card-stacked">
-                            <h3 class="card-content header">{{item.title}}</h3>
-                            <div class="card-content">
-                                <b>Summary: </b>{{item.description}}</p>
-                                <b>Address: </b>{{item.address}}</p>
-                            </div>
-                            <div class="card-action">
-                                <a href="#">Bid</a>
-                            </div>
+                        <div class="modal-footer">
+                            <a href="#!" id="bidEstate" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="bid(item)">Bid</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" ng-if="isLoggedIn">
         <a class="btn-floating btn-large red modal-trigger waves-effect waves-light " onclick="$('#postModal').openModal();">
             <i class="material-icons post">add</i>
         </a>
@@ -134,36 +164,48 @@
     <!-- Modal Structure -->
     <div id="postModal" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>Post</h4>
-            <form class="col s12">
+            <h4>Edit Estate information</h4>
+            <form class="col s12" ng-model="estate">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="title" type="text" class="validate">
+                        <input id="title" type="text" class="validate" ng-model="title">
                         <label for="title">Title</label>
                     </div>
                 </div>
                 <div class="row">
+                    <form action="#">
+                        <label>Starting Bid Price: {{startPrice}}</label>
+                        <p class="range-field">
+                            <input type="range" id="startPrice" min="0" max="2000" ng-model="startPrice" />
+                        </p>
+                    </form>
+                </div>
+                <div class="row">
+                    <label for="lastDayOfBid">Last day of Bid</label>
+                    <input type="date" class="datepicker" ng-model="lastDayOfBid">
+                </div>
+                <div class="row">
                     <div class="input-field col s12">
-                        <input id="address" type="text" class="validate">
+                        <input id="address" type="text" class="validate" ng-model="address">
                         <label for="address">Address</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="description" type="text" class="validate">
+                        <input id="description" type="text" class="validate" ng-model="description">
                         <label for="description">Description</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="imageLink" type="text" class="validate">
-                        <label for="imageLink">Image Link</label>
+                        <input id="imageLink" type="text" class="validate" ng-model="photoURL">
+                        <label for="imageLink">Photo URL</label>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Save</a>
+            <a href="#!" id="postEstate" class="modal-action modal-close waves-effect waves-green btn-flat ">Save</a>
         </div>
     </div>
 </body>
